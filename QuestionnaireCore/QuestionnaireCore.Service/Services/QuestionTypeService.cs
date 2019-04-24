@@ -14,109 +14,81 @@ using System.Threading.Tasks;
 
 namespace QuestionnaireCore.Service.Services
 {
-    public abstract class BaseQueryService<TEntity, TModel, TSortType> : BaseService, IBaseQueryService<TEntity, TModel, TSortType>
-     where TEntity : class, IEntityBase, new()
+    public class QuestionTypeService : BaseQueryService<QuestionType, QuestionTypeModel, PostSortType>, IQuestionTypeService
     {
-        public BaseQueryService(IUnitOfWork uow, IMapper mapper)
+        public QuestionTypeService(IUnitOfWork uow, IMapper mapper)
             : base(uow, mapper)
         { }
 
-        #region Abstract
-
-        protected abstract IQueryable<TEntity> Order(IQueryable<TEntity> items, bool isFirst, QueryOrder<TSortType> order);
-        protected abstract IQueryable<TEntity> Search(IQueryable<TEntity> items, QuerySearch search);
-        protected abstract IQueryable<TEntity> Category(IQueryable<TEntity> items, QuerySearch querySearch);
-        protected abstract IQueryable<TEntity> SourceOrder(IQueryable<TEntity> items, QuerySearch source);
-        #endregion
-
-        public virtual Task<QueryResponse<TModel>> GetAsync(QueryRequest<TSortType> query) => GetAsync(query, _uow.GetRepository<TEntity>().GetAll());
-
-        protected virtual async Task<QueryResponse<TModel>> GetAsync(QueryRequest<TSortType> query, IQueryable<TEntity> items)
+        public QuestionTypeModel Get(int id)
         {
-            var result = new QueryResponse<TModel>();
-            // include properties
-            items = Include(items, query.Includes);
-            // search filter
-            items = Search(items, query.Search);
-            // category filter
-            items = Category(items, query.QuerySearch);
-            // source order filter
-            items = SourceOrder(items, query.SourceOrder);
-            // get totla count
-            result.RecordsTotal = items.Count();
-            // order items
-            items = Order(items, query.OrderQueries);
-            // paging
-            items = Paging(items, query.Start, query.Length);
-            // get filtered items list
-            result.Data = _mapper.Map<IList<TModel>>(await items.ToListAsync());
-            // get filtered count
-            result.RecordsFiltered = result.Data.Count();
-            // return query response
-            return result;
+            var questionType = _uow.GetRepository<QuestionType>().Get(id);
+            _uow.GetRepository<QuestionType>().Delete(questionType);
+            _uow.SaveChanges();
         }
 
-        protected virtual IQueryable<TEntity> Include(IQueryable<TEntity> items, IEnumerable<string> includes)
+        public QuestionTypeModel Get(int? id)
         {
-            if (includes != null)
-            {
-                foreach (var include in includes)
-                {
-                    items = items.Include(include);
-                }
-            }
-            return items;
+            throw new NotImplementedException();
         }
 
-        public static Expression<Func<T, bool>> SearchAllFields<T>(string searchText)
+        public void Add(QuestionTypeModel item)
         {
-            var t = Expression.Parameter(typeof(T));
-            Expression body = Expression.Constant(false);
-
-            var containsMethod = typeof(string).GetMethod("Contains"
-                , new[] { typeof(string) });
-            var toStringMethod = typeof(object).GetMethod("ToString");
-
-            var stringProperties = typeof(T).GetProperties()
-                .Where(property => property.PropertyType == typeof(string));
-
-            foreach (var property in stringProperties)
-            {
-                var stringValue = Expression.Call(Expression.Property(t, property.Name),
-                    toStringMethod);
-                var nextExpression = Expression.Call(stringValue,
-                    containsMethod,
-                    Expression.Constant(searchText));
-
-                body = Expression.OrElse(body, nextExpression);
-            }
-
-            return Expression.Lambda<Func<T, bool>>(body, t);
+            var questionType = _mapper.Map<QuestionType>(item);
+            _uow.GetRepository<QuestionType>().Create(questionType);
+            _uow.SaveChanges();
         }
 
-        protected virtual IQueryable<TEntity> Order(IQueryable<TEntity> items, IEnumerable<QueryOrder<TSortType>> order)
+        public void Update(QuestionTypeModel item)
         {
-            if (order != null)
-            {
-                // sort order types
-                var isFirst = true;
-                foreach (var queryOrder in order.OrderBy(i => i.Order))
-                {
-                    // for all order types
-                    items = Order(items, isFirst, queryOrder);
-                    // for next iterations
-                    isFirst = false;
-                }
-            }
-            // retuen ordered items
-            return items;
+            var questionType = _mapper.Map<QuestionType>(item);
+            _uow.GetRepository<QuestionType>().Update(questionType);
+            _uow.SaveChanges();
         }
 
-        protected virtual IQueryable<TEntity> Paging(IQueryable<TEntity> items, int? start, int? length)
+        public void Delete(int id)
         {
-            if (start > 0) items = items.Skip(start.Value);
-            if (length > 0) items = items.Take(length.Value);
-            return items;
+            
+            var questionType = _uow.GetRepository<QuestionType>().Get(id);
+            _uow.GetRepository<QuestionType>().Delete(questionType);
+            _uow.SaveChanges();
+        }
+       
+        public IEnumerable<QuestionTypeModel> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<QueryResponse<QuestionTypeModel>> GetAsync(QueryRequest<SortDirectionType> query)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<QuestionTypeModel> GetListOrderedByName()
+        {
+            throw new NotImplementedException();
+        }
+
+       
+
+        protected override IQueryable<QuestionType> Category(IQueryable<QuestionType> items, QuerySearch category)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override IQueryable<QuestionType> Order(IQueryable<QuestionType> items, bool isFirst, QueryOrder<PostSortType> order)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override IQueryable<QuestionType> Search(IQueryable<QuestionType> items, QuerySearch search)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override IQueryable<QuestionType> SourceOrder(IQueryable<QuestionType> items, QuerySearch source)
+        {
+            throw new NotImplementedException();
         }
     }
 }

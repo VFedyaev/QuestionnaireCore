@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace QuestionnaireCore.Service.Services
+namespace QuestionnaireCore.Service.Enums
 {
-    class BaseQuerySerive
+    public enum PostSortType
     {
+        Title
     }
 }

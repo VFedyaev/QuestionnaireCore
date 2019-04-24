@@ -11,5 +11,11 @@ namespace QuestionnaireCore.Service.Interfaces
     {
         IEnumerable<QuestionTypeModel> GetListOrderedByName();
         QuestionTypeModel Get(int? id);
+
+        IEnumerable<QuestionTypeModel> GetAll();
+        QuestionTypeModel Get(int id);
+        void Add(QuestionTypeModel item);
+        void Update(QuestionTypeModel item);
+        void Delete(int id);
     }
 }

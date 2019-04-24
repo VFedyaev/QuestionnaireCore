@@ -4,9 +4,7 @@ using System.Text;
 
 namespace QuestionnaireCore.Data.Interfaces
 {
-    public interface IEntityBase
-    {
-    }
+    public interface IEntityBase { }
 
     public interface IEntityBase<T> : IEntityBase
     {

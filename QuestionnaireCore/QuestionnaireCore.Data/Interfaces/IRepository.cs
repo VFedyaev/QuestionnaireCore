@@ -11,9 +11,9 @@ namespace QuestionnaireCore.Data.Interfaces
     public interface IRepository<T> : IRepository where T : class, IEntityBase, new()
     {
         IQueryable<T> GetAll();
-        T Get(int? id);
+        T Get(params object[] id);
         void Create(T item);
         void Update(T item);
-        void Delete(int id);
+        void Delete(T item);
     }
 }

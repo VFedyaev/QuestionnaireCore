@@ -6,7 +6,7 @@ namespace QuestionnaireCore.Data.Enums
 {
     public enum Gender
     {
-        Мужчины,
-        Женщины
+        Male,
+        Female
     }
 }
