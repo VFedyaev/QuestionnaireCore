@@ -14,81 +14,69 @@ using System.Threading.Tasks;
 
 namespace QuestionnaireCore.Service.Services
 {
-    public class QuestionTypeService : BaseQueryService<QuestionType, QuestionTypeModel, PostSortType>, IQuestionTypeService
+    public class QuestionTypeService : BaseQueryService<QuestionType, QuestionTypeModel, QuestionTypeSort>, IQuestionTypeService
     {
         public QuestionTypeService(IUnitOfWork uow, IMapper mapper)
             : base(uow, mapper)
         { }
 
-        public QuestionTypeModel Get(int id)
+        public void AddQuestionType(QuestionTypeModel questionTypeModel)
         {
-            var questionType = _uow.GetRepository<QuestionType>().Get(id);
+            var questionType = _uow.GetRepository<QuestionType>().All()
+              .FirstOrDefault(x => x.Name == questionTypeModel.Name);
+
+            if (questionType != null)
+                return;
+
+            questionType = _mapper.Map<QuestionType>(questionTypeModel);
+
+            _uow.GetRepository<QuestionType>().Insert(questionType);
+
+            _uow.SaveChanges();
+        }
+
+        public void DeleteQuestionType(int questionTypeId)
+        {
+            var questionType = _uow.GetRepository<QuestionType>().GetById(questionTypeId);
             _uow.GetRepository<QuestionType>().Delete(questionType);
             _uow.SaveChanges();
         }
 
-        public QuestionTypeModel Get(int? id)
+        public QuestionTypeModel GetQuestionTypeById(int id)
         {
-            throw new NotImplementedException();
+            var questionType = _uow.GetRepository<QuestionType>().GetById(id);
+            return _mapper.Map<QuestionTypeModel>(questionType);
         }
 
-        public void Add(QuestionTypeModel item)
+        public IEnumerable<QuestionTypeModel> GetQuestionTypes()
         {
-            var questionType = _mapper.Map<QuestionType>(item);
-            _uow.GetRepository<QuestionType>().Create(questionType);
-            _uow.SaveChanges();
+            var questionType = _uow.GetRepository<QuestionType>().All();
+            return _mapper.Map<IEnumerable<QuestionTypeModel>>(questionType.OrderBy(x => x.Name));
         }
 
-        public void Update(QuestionTypeModel item)
+        public void UpdateQuestionType(QuestionTypeModel questionTypeModel)
         {
-            var questionType = _mapper.Map<QuestionType>(item);
+            var questionType = _uow.GetRepository<QuestionType>().All()
+            .FirstOrDefault(x => x.Name == questionTypeModel.Name);
+
+            if (questionType != null)
+                return;
+
+            questionType = _mapper.Map<QuestionType>(questionTypeModel);
+
             _uow.GetRepository<QuestionType>().Update(questionType);
+
             _uow.SaveChanges();
         }
 
-        public void Delete(int id)
+        protected override IQueryable<QuestionType> Order(IQueryable<QuestionType> items, bool isFirst, QueryOrder<QuestionTypeSort> order)
         {
-            
-            var questionType = _uow.GetRepository<QuestionType>().Get(id);
-            _uow.GetRepository<QuestionType>().Delete(questionType);
-            _uow.SaveChanges();
-        }
-       
-        public IEnumerable<QuestionTypeModel> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<QueryResponse<QuestionTypeModel>> GetAsync(QueryRequest<SortDirectionType> query)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<QuestionTypeModel> GetListOrderedByName()
-        {
-            throw new NotImplementedException();
-        }
-
-       
-
-        protected override IQueryable<QuestionType> Category(IQueryable<QuestionType> items, QuerySearch category)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override IQueryable<QuestionType> Order(IQueryable<QuestionType> items, bool isFirst, QueryOrder<PostSortType> order)
-        {
-            throw new NotImplementedException();
+            return items;
         }
 
         protected override IQueryable<QuestionType> Search(IQueryable<QuestionType> items, QuerySearch search)
         {
-            throw new NotImplementedException();
-        }
-
-        protected override IQueryable<QuestionType> SourceOrder(IQueryable<QuestionType> items, QuerySearch source)
-        {
-            throw new NotImplementedException();
+            return items;
         }
     }
 }

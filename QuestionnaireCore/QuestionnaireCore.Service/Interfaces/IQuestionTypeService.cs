@@ -4,18 +4,16 @@ using QuestionnaireCore.Service.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace QuestionnaireCore.Service.Interfaces
 {
-    public interface IQuestionTypeService : IBaseQueryService<QuestionType, QuestionTypeModel, SortDirectionType>
+    public interface IQuestionTypeService : IBaseQueryService<QuestionType, QuestionTypeModel, QuestionTypeSort>
     {
-        IEnumerable<QuestionTypeModel> GetListOrderedByName();
-        QuestionTypeModel Get(int? id);
-
-        IEnumerable<QuestionTypeModel> GetAll();
-        QuestionTypeModel Get(int id);
-        void Add(QuestionTypeModel item);
-        void Update(QuestionTypeModel item);
-        void Delete(int id);
+        IEnumerable<QuestionTypeModel> GetQuestionTypes();
+        QuestionTypeModel GetQuestionTypeById(int id);
+        void AddQuestionType(QuestionTypeModel questionTypeModel);
+        void UpdateQuestionType(QuestionTypeModel questionTypeModel);
+        void DeleteQuestionType(int questionTypeId);
     }
 }

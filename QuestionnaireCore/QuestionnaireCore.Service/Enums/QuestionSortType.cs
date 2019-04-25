@@ -4,8 +4,8 @@ using System.Text;
 
 namespace QuestionnaireCore.Service.Enums
 {
-    public enum PostSortType
+    public enum QuestionSortType
     {
-        Title
+        Name = 1
     }
 }

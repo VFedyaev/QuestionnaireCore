@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using QuestionnaireCore.Data.Configurations;
 using QuestionnaireCore.Data.Entities;
 using System;
 using System.Collections.Generic;
@@ -27,10 +28,18 @@ namespace QuestionnaireCore.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<Question>()
-                .HasIndex(q => new { q.Name}).IsUnique();
-            builder.Entity<Answer>()
-                .HasIndex(a => new { a.Name }).IsUnique();
+
+            builder.ApplyConfiguration(new QuestionTypeConfig());
+            builder.ApplyConfiguration(new QuestionConfig());
+            builder.ApplyConfiguration(new AnswerConfig());
+            builder.ApplyConfiguration(new QuestionAnswerConfig());
+            builder.ApplyConfiguration(new SurveyGeographyConfig());
+            builder.ApplyConfiguration(new HousingTypeConfig());
+            builder.ApplyConfiguration(new DistrictConfig());
+            builder.ApplyConfiguration(new InterviewerConfig());
+            builder.ApplyConfiguration(new FormConfig());
+            builder.ApplyConfiguration(new FamilyConfig());
+            builder.ApplyConfiguration(new DataConfig());
         }
     }
 }

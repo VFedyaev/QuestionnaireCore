@@ -10,10 +10,17 @@ namespace QuestionnaireCore.Data.Interfaces
 
     public interface IRepository<T> : IRepository where T : class, IEntityBase, new()
     {
-        IQueryable<T> GetAll();
-        T Get(params object[] id);
-        void Create(T item);
-        void Update(T item);
-        void Delete(T item);
+        IQueryable<T> All();
+        Task<T> GetByIdAsync(params object[] id);
+        T GetById(params object[] id);
+        Task InsertAsync(T entity);
+        void Insert(T entity);
+        Task InsertAsync(IEnumerable<T> entities);
+        void Insert(IEnumerable<T> entities);
+        void Update(T entity);
+        void Update(IEnumerable<T> entities);
+        void Delete(T entity);
+        void Delete(params object[] id);
+        void Delete(IEnumerable<T> entities);
     }
 }

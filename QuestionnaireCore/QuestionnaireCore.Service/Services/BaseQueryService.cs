@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using QuestionnaireCore.Data.Interfaces;
 using QuestionnaireCore.Service.Interfaces;
 using QuestionnaireCore.Service.Query;
@@ -18,11 +19,8 @@ namespace QuestionnaireCore.Service.Services
         { }
 
         #region Abstract
-
         protected abstract IQueryable<TEntity> Order(IQueryable<TEntity> items, bool isFirst, QueryOrder<TSortType> order);
         protected abstract IQueryable<TEntity> Search(IQueryable<TEntity> items, QuerySearch search);
-        protected abstract IQueryable<TEntity> Category(IQueryable<TEntity> items, QuerySearch category);
-        protected abstract IQueryable<TEntity> SourceOrder(IQueryable<TEntity> items, QuerySearch source);
         #endregion
 
         public virtual Task<QueryResponse<TModel>> GetAsync(QueryRequest<TSortType> query) => GetAsync(query, _uow.GetRepository<TEntity>().All());
@@ -34,10 +32,6 @@ namespace QuestionnaireCore.Service.Services
             items = Include(items, query.Includes);
             // search filter
             items = Search(items, query.Search);
-            // category filter
-            items = Category(items, query.Category);
-            // source order filter
-            items = SourceOrder(items, query.SourceOrder);
             // get totla count
             result.RecordsTotal = items.Count();
             // order items

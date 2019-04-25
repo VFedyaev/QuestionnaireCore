@@ -1,12 +1,11 @@
-﻿using AutoMapper.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using QuestionnaireCore.Common.Interfaces;
 using QuestionnaireCore.Data;
 using QuestionnaireCore.Data.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using QuestionnaireCore.Service.Interfaces;
+using QuestionnaireCore.Service.Services;
 
 namespace QuestionnaireCore.Common
 {
@@ -29,9 +28,7 @@ namespace QuestionnaireCore.Common
 
             // add scoped registrations
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IPostService, PostService>();
-            services.AddScoped<IChannelService, ChannelService>();
-            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IQuestionTypeService, QuestionTypeService>();
         }
 
         protected virtual void ConfigureDatabase(IServiceCollection services)
