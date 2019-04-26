@@ -2,6 +2,7 @@
 using QuestionnaireCore.Data.Entities;
 using QuestionnaireCore.Data.Interfaces;
 using QuestionnaireCore.Service.Enums;
+using QuestionnaireCore.Service.Extensions;
 using QuestionnaireCore.Service.Interfaces;
 using QuestionnaireCore.Service.Models;
 using QuestionnaireCore.Service.Query;
@@ -71,11 +72,26 @@ namespace QuestionnaireCore.Service.Services
 
         protected override IQueryable<QuestionType> Order(IQueryable<QuestionType> items, bool isFirst, QueryOrder<QuestionTypeSort> order)
         {
-            return items;
+            switch (order.OrderType)
+            {
+                case QuestionTypeSort.Name:
+                    return items.OrderWithDirectionBy(isFirst, order.Direction, x => x.Name);
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(order.OrderType));
+        }
+
+        protected override IQueryable<QuestionType> Paging(IQueryable<QuestionType> items, int? start, int? length)
+        {
+            return items.Skip(start.Value).Take(length.Value);
         }
 
         protected override IQueryable<QuestionType> Search(IQueryable<QuestionType> items, QuerySearch search)
         {
+            if (!string.IsNullOrEmpty(search?.Value))
+            {
+                return items.Where(x => x.Name.Contains(search.Value));
+            }
             return items;
         }
     }
