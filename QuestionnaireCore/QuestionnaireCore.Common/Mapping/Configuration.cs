@@ -9,10 +9,10 @@ namespace QuestionnaireCore.Common.Mapping
     {
         private static Lazy<IConfigurationProvider> _defaultConfiguration =
             new Lazy<IConfigurationProvider>(() =>
-            new MapperConfiguration(config =>
-           {
-               config.AddProfile(new DataProfile());
-           })
+                new MapperConfiguration(config =>
+               {
+                   config.AddProfile(new DataProfile());
+               })
             );
         public static IConfigurationProvider DefaultConfiguration => _defaultConfiguration.Value;
 

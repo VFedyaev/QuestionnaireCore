@@ -12,6 +12,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\QuestionnaireCore.Data\QuestionnaireCore.Data.csproj" />
+    <ProjectReference Include="..\QuestionnaireCore.Service\QuestionnaireCore.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Admin\Views\" />
   </ItemGroup>
 
 </Project>
